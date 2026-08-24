@@ -1,0 +1,1784 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "infor-connector",
+  "version": "0.1.0",
+  "name": "Infor (ION API Gateway)",
+  "description": "Connect your own Infor OS tenant via ION API Gateway OAuth2 credentials. Make generic authenticated REST calls to any ION-routed endpoint across your licensed Infor CloudSuite products (LN, M3, SunSystems, and others), and manage ION Workflow tasks and Document Flow messages.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "infor:read",
+    "infor:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_infor",
+      "description": "Connect an Infor OS tenant's ION API Gateway (service-account OAuth2), after validating connectivity.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "infor.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly tenant label, e.g. 'Acme Production'.",
+            "title": "Label",
+            "type": "string"
+          },
+          "portal_url": {
+            "description": "ION portal/token URL (the 'pu' field from your .ionapi file), e.g. https://mingle-ionapi.inforcloudsuite.com.",
+            "title": "Portal Url",
+            "type": "string"
+          },
+          "tenant_id": {
+            "description": "ION tenant ID (the 'ti' field from your .ionapi file).",
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "client_id": {
+            "description": "ION OAuth client ID (the 'cn' field).",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "client_secret": {
+            "description": "ION OAuth client secret (the 'cs' field).",
+            "title": "Client Secret",
+            "type": "string"
+          },
+          "saak": {
+            "description": "Service account access key (the 'saak' field).",
+            "title": "Saak",
+            "type": "string"
+          },
+          "sask": {
+            "description": "Service account secret key (the 'sask' field).",
+            "title": "Sask",
+            "type": "string"
+          }
+        },
+        "required": [
+          "portal_url",
+          "tenant_id",
+          "client_id",
+          "client_secret",
+          "saak",
+          "sask"
+        ],
+        "title": "ConnectInforParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "portal_url": {
+            "title": "Portal Url",
+            "type": "string"
+          },
+          "tenant_id": {
+            "title": "Tenant Id",
+            "type": "string"
+          },
+          "connected": {
+            "default": true,
+            "title": "Connected",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "label",
+          "portal_url",
+          "tenant_id"
+        ],
+        "title": "InforConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.connect_infor",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "disconnect_infor",
+      "description": "Disconnect an Infor ION tenant: deletes the saved credentials. Nothing in Infor itself is changed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "infor.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Saved Infor ION tenant connection ID to remove from Imperal.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectInforParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "deleted": {
+            "default": true,
+            "title": "Deleted",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.disconnect_infor",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected Infor ION tenants.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "InforConnection": {
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "portal_url": {
+                "title": "Portal Url",
+                "type": "string"
+              },
+              "tenant_id": {
+                "title": "Tenant Id",
+                "type": "string"
+              },
+              "connected": {
+                "default": true,
+                "title": "Connected",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "label",
+              "portal_url",
+              "tenant_id"
+            ],
+            "title": "InforConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/$defs/InforConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "call_ion_api",
+      "description": "Make a generic authenticated REST call to any ION-routed path on the connected tenant.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "update:resource"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "method": {
+            "default": "GET",
+            "description": "HTTP method: GET, POST, PUT, DELETE, PATCH.",
+            "title": "Method",
+            "type": "string"
+          },
+          "path": {
+            "description": "ION-routed path relative to the tenant root, e.g. 'LN/lnapi/ta/...' or 'IONSERVICES/api/...'.",
+            "title": "Path",
+            "type": "string"
+          },
+          "query_params": {
+            "additionalProperties": true,
+            "description": "Optional query string parameters.",
+            "title": "Query Params",
+            "type": "object"
+          },
+          "body": {
+            "additionalProperties": true,
+            "description": "Optional JSON request body for POST/PUT/PATCH.",
+            "title": "Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "path"
+        ],
+        "title": "CallIonApiParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "status_code": {
+            "default": 200,
+            "title": "Status Code",
+            "type": "integer"
+          },
+          "body": {
+            "additionalProperties": true,
+            "title": "Body",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "IonApiResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.call_ion_api",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "audit_infor_access",
+      "description": "Probe a set of ION paths (defaults to a small common set) and report which respond on this tenant.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "paths": {
+            "description": "ION paths to probe for availability. Defaults to a small common set if omitted.",
+            "items": {
+              "type": "string"
+            },
+            "title": "Paths",
+            "type": "array"
+          }
+        },
+        "title": "AuditAccessParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "PathCheck": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "available": {
+                "title": "Available",
+                "type": "boolean"
+              },
+              "detail": {
+                "default": "",
+                "title": "Detail",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "path",
+              "available"
+            ],
+            "title": "PathCheck",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "checks": {
+            "items": {
+              "$ref": "#/$defs/PathCheck"
+            },
+            "title": "Checks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "AccessAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.audit_infor_access",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "list_ion_workflow_tasks",
+      "description": "List ION Workflow tasks visible to this service account, optionally filtered by status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter, e.g. 'OPEN', 'COMPLETED'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "top": {
+            "default": 50,
+            "description": "Maximum records to return (1-200).",
+            "maximum": 200,
+            "minimum": 1,
+            "title": "Top",
+            "type": "integer"
+          }
+        },
+        "title": "ListWorkflowTasksParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "WorkflowTask": {
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "subject": {
+                "default": "",
+                "title": "Subject",
+                "type": "string"
+              },
+              "priority": {
+                "default": "",
+                "title": "Priority",
+                "type": "string"
+              },
+              "due_date": {
+                "default": "",
+                "title": "Due Date",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title"
+            ],
+            "title": "WorkflowTask",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "tasks": {
+            "items": {
+              "$ref": "#/$defs/WorkflowTask"
+            },
+            "title": "Tasks",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "WorkflowTaskList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.list_ion_workflow_tasks",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "get_ion_workflow_task",
+      "description": "Read one ION Workflow task in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "task_id": {
+            "description": "ION Workflow task ID.",
+            "title": "Task Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id"
+        ],
+        "title": "GetWorkflowTaskParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "subject": {
+            "default": "",
+            "title": "Subject",
+            "type": "string"
+          },
+          "priority": {
+            "default": "",
+            "title": "Priority",
+            "type": "string"
+          },
+          "due_date": {
+            "default": "",
+            "title": "Due Date",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "WorkflowTask",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.get_ion_workflow_task",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "action_ion_workflow_task",
+      "description": "Approve, reject, or complete an ION Workflow task.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "infor.workflow_task.actioned"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "task_id": {
+            "description": "ION Workflow task ID.",
+            "title": "Task Id",
+            "type": "string"
+          },
+          "action": {
+            "description": "One of: approve, reject, complete.",
+            "title": "Action",
+            "type": "string"
+          },
+          "comment": {
+            "default": "",
+            "description": "Optional comment to attach to the action.",
+            "title": "Comment",
+            "type": "string"
+          }
+        },
+        "required": [
+          "task_id",
+          "action"
+        ],
+        "title": "ActionWorkflowTaskParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "success": {
+            "default": true,
+            "title": "Success",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ActionOutcome",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.action_ion_workflow_task",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "list_document_flow_messages",
+      "description": "List ION Document Flow messages visible to this service account, optionally filtered by status.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status": {
+            "default": "",
+            "description": "Optional status filter, e.g. 'ERROR', 'PROCESSED'.",
+            "title": "Status",
+            "type": "string"
+          },
+          "top": {
+            "default": 50,
+            "description": "Maximum records to return (1-200).",
+            "maximum": 200,
+            "minimum": 1,
+            "title": "Top",
+            "type": "integer"
+          }
+        },
+        "title": "ListDocumentFlowMessagesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "DocumentFlowMessage": {
+            "properties": {
+              "id": {
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "default": "",
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "document_type": {
+                "default": "",
+                "title": "Document Type",
+                "type": "string"
+              },
+              "timestamp": {
+                "default": "",
+                "title": "Timestamp",
+                "type": "string"
+              },
+              "raw": {
+                "additionalProperties": true,
+                "title": "Raw",
+                "type": "object"
+              }
+            },
+            "required": [
+              "id",
+              "title"
+            ],
+            "title": "DocumentFlowMessage",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "messages": {
+            "items": {
+              "$ref": "#/$defs/DocumentFlowMessage"
+            },
+            "title": "Messages",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DocumentFlowMessageList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.list_document_flow_messages",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "get_document_flow_message",
+      "description": "Read one ION Document Flow message in full by id.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "message_id": {
+            "description": "Document Flow message ID.",
+            "title": "Message Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id"
+        ],
+        "title": "GetDocumentFlowMessageParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "default": "",
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "document_type": {
+            "default": "",
+            "title": "Document Type",
+            "type": "string"
+          },
+          "timestamp": {
+            "default": "",
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "raw": {
+            "additionalProperties": true,
+            "title": "Raw",
+            "type": "object"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "DocumentFlowMessage",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.get_document_flow_message",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    },
+    {
+      "name": "resend_document_flow_message",
+      "description": "Resend a failed/stuck ION Document Flow message.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "infor.document_flow_message.resent"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Infor ION tenant connection ID. Omit to use the first connected tenant.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "message_id": {
+            "description": "Document Flow message ID to resend.",
+            "title": "Message Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message_id"
+        ],
+        "title": "ResendDocumentFlowMessageParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "success": {
+            "default": true,
+            "title": "Success",
+            "type": "boolean"
+          },
+          "detail": {
+            "default": "",
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title"
+        ],
+        "title": "ActionOutcome",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "infor-connector.resend_document_flow_message",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "infor"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 698,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "infor_connections",
+      "description": "JSON list of connected Infor ION API Gateway tenants and encrypted credentials. Managed only through connect_infor and disconnect_infor.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 90
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "infor_sidebar",
+      "slot": "left",
+      "title": "Infor",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "infor_connect_help",
+      "slot": "center",
+      "title": "Connecting Infor",
+      "tree": {},
+      "icon": "HelpCircle",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "infor_center",
+      "slot": "center",
+      "title": "ION API bridge",
+      "tree": {},
+      "icon": "Network",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "infor_settings",
+      "slot": "center",
+      "title": "Infor settings",
+      "tree": {},
+      "icon": "settings",
+      "refresh": "manual",
+      "center_overlay": true
+    }
+  ]
+}
