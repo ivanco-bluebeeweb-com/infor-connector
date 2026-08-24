@@ -85,7 +85,7 @@ async def infor_center(ctx, **kwargs) -> ui.UINode:
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Header(text="Generic ION API call", level=2, subtitle="Call any ION-routed endpoint your tenant exposes"),
         ui.Form(action="call_ion_api", submit_label="Call", children=[
-            _field("Method", ui.Select(param_name="method", options=["GET", "POST", "PUT", "PATCH", "DELETE"], default="GET")),
+            _field("Method", ui.Select(param_name="method", options=["GET", "POST", "PUT", "PATCH", "DELETE"], value="GET")),
             _field("ION path", ui.Input(param_name="path", placeholder="IONSERVICES/api/workflow/tasks")),
             _field("Request body (JSON, optional)", ui.Textarea(param_name="body", placeholder="{}")),
         ]),
