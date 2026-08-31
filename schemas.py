@@ -76,6 +76,8 @@ class InforConnection(sdl.Entity):
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connections: list[InforConnection] = Field(default_factory=list)
 
 
@@ -87,6 +89,8 @@ class IonApiResult(sdl.Entity):
 
 
 class PathCheck(sdl.Entity):
+    id: str = ""
+    title: str = ""
     path: str
     available: bool
     detail: str = ""
@@ -109,6 +113,8 @@ class WorkflowTask(sdl.Entity):
 
 
 class WorkflowTaskList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     tasks: list[WorkflowTask] = Field(default_factory=list)
 
 
@@ -122,6 +128,8 @@ class DocumentFlowMessage(sdl.Entity):
 
 
 class DocumentFlowMessageList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     messages: list[DocumentFlowMessage] = Field(default_factory=list)
 
 
