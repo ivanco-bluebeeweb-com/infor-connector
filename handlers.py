@@ -121,7 +121,7 @@ async def disconnect_infor(ctx, params: DisconnectInforParams) -> ActionResult:
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """Imperal action: list_connections."""
     connections = await _load_connections(ctx)
-    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]))
+    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]), summary="Connections listed.")
 
 
 @chat.function("call_ion_api", "Make a generic authenticated REST call to any ION-routed path on the connected tenant.", action_type="write", chain_callable=True, data_model=IonApiResult, event="infor-connector.call_ion_api", effects=["update:resource"])
@@ -132,7 +132,7 @@ async def call_ion_api(ctx, params: CallIonApiParams) -> ActionResult:
         body = await client.request(params.method, params.path, params=params.query_params or None, json_body=params.body or None)
     except ic.InforError as exc:
         return ActionResult.error(str(exc), code="INFOR_ION_CALL_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=IonApiResult(id=params.path, title=params.path, status_code=200, body=body))
+    return ActionResult.success(data=IonApiResult(id=params.path, title=params.path, status_code=200, body=body), summary="Call ion api done.")
 
 
 @chat.function("audit_infor_access", "Probe a set of ION paths (defaults to a small common set) and report which respond on this tenant.", action_type="read", chain_callable=True, data_model=AccessAudit, event="infor-connector.audit_infor_access")
@@ -150,7 +150,7 @@ async def audit_infor_access(ctx, params: AuditAccessParams) -> ActionResult:
             checks.append(PathCheck(path=path, available=True, detail="OK"))
         except ic.InforError as exc:
             checks.append(PathCheck(path=path, available=False, detail=str(exc)))
-    return ActionResult.success(data=AccessAudit(id="audit", title="Infor ION access audit", checks=checks))
+    return ActionResult.success(data=AccessAudit(id="audit", title="Infor ION access audit", checks=checks), summary="Infor access audit ready.")
 
 
 @chat.function("list_ion_workflow_tasks", "List ION Workflow tasks visible to this service account, optionally filtered by status.", action_type="read", chain_callable=True, data_model=WorkflowTaskList, event="infor-connector.list_ion_workflow_tasks")
@@ -173,7 +173,7 @@ async def list_ion_workflow_tasks(ctx, params: ListWorkflowTasksParams) -> Actio
         )
         for item in items if isinstance(item, dict)
     ]
-    return ActionResult.success(data=WorkflowTaskList(tasks=tasks))
+    return ActionResult.success(data=WorkflowTaskList(tasks=tasks), summary="Ion workflow tasks listed.")
 
 
 @chat.function("get_ion_workflow_task", "Read one ION Workflow task in full by id.", action_type="read", chain_callable=True, data_model=WorkflowTask, event="infor-connector.get_ion_workflow_task")
@@ -188,7 +188,7 @@ async def get_ion_workflow_task(ctx, params: GetWorkflowTaskParams) -> ActionRes
         id=str(item.get("id", params.task_id)), title=item.get("subject", "") or params.task_id,
         subject=item.get("subject", ""), status=item.get("status", ""),
         priority=item.get("priority", ""), due_date=item.get("dueDate", ""), raw=item,
-    ))
+    ), summary="Ion workflow task retrieved.")
 
 
 @chat.function("action_ion_workflow_task", "Approve, reject, or complete an ION Workflow task.", action_type="write", chain_callable=True, data_model=ActionOutcome, event="infor-connector.action_ion_workflow_task", effects=["infor.workflow_task.actioned"])
@@ -202,7 +202,7 @@ async def action_ion_workflow_task(ctx, params: ActionWorkflowTaskParams) -> Act
         await client.post(f"IONSERVICES/api/workflow/tasks/{params.task_id}/{action}", json_body={"comment": params.comment})
     except ic.InforError as exc:
         return ActionResult.error(str(exc), code="INFOR_WORKFLOW_ACTION_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=ActionOutcome(id=params.task_id, title=f"Workflow task {params.task_id}", success=True, detail=f"Task {action}d."))
+    return ActionResult.success(data=ActionOutcome(id=params.task_id, title=f"Workflow task {params.task_id}", success=True, detail=f"Task {action}d."), summary="Action ion workflow task done.")
 
 
 @chat.function("list_document_flow_messages", "List ION Document Flow messages visible to this service account, optionally filtered by status.", action_type="read", chain_callable=True, data_model=DocumentFlowMessageList, event="infor-connector.list_document_flow_messages")
@@ -225,7 +225,7 @@ async def list_document_flow_messages(ctx, params: ListDocumentFlowMessagesParam
         )
         for item in items if isinstance(item, dict)
     ]
-    return ActionResult.success(data=DocumentFlowMessageList(messages=messages))
+    return ActionResult.success(data=DocumentFlowMessageList(messages=messages), summary="Document flow messages listed.")
 
 
 @chat.function("get_document_flow_message", "Read one ION Document Flow message in full by id.", action_type="read", chain_callable=True, data_model=DocumentFlowMessage, event="infor-connector.get_document_flow_message")
@@ -240,7 +240,7 @@ async def get_document_flow_message(ctx, params: GetDocumentFlowMessageParams) -
         id=str(item.get("id", params.message_id)), title=item.get("documentType", "") or params.message_id,
         status=item.get("status", ""), document_type=item.get("documentType", ""),
         timestamp=item.get("timestamp", ""), raw=item,
-    ))
+    ), summary="Document flow message retrieved.")
 
 
 @chat.function("resend_document_flow_message", "Resend a failed/stuck ION Document Flow message.", action_type="write", chain_callable=True, data_model=ActionOutcome, event="infor-connector.resend_document_flow_message", effects=["infor.document_flow_message.resent"])
@@ -251,4 +251,4 @@ async def resend_document_flow_message(ctx, params: ResendDocumentFlowMessagePar
         await client.post(f"IONSERVICES/api/documentflow/messages/{params.message_id}/resend")
     except ic.InforError as exc:
         return ActionResult.error(str(exc), code="INFOR_DOCFLOW_RESEND_FAILED", retryable=exc.retryable)
-    return ActionResult.success(data=ActionOutcome(id=params.message_id, title=f"Document Flow message {params.message_id}", success=True, detail="Resend requested."))
+    return ActionResult.success(data=ActionOutcome(id=params.message_id, title=f"Document Flow message {params.message_id}", success=True, detail="Resend requested."), summary="Resend document flow message done.")
